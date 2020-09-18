@@ -22,14 +22,14 @@ async fn graphql(
     st: web::Data<Arc<Schema>>,
     data: web::Json<GraphQLRequest>,
 ) -> Result<HttpResponse, Error> {
-    let user = web::block(move || {
+    let entity = web::block(move || {
         let res = data.execute(&st, &());
         Ok::<_, serde_json::error::Error>(serde_json::to_string(&res)?)
     })
     .await?;
     Ok(HttpResponse::Ok()
         .content_type("application/json")
-        .body(user))
+        .body(entity))
 }
 
 #[actix_web::main]
